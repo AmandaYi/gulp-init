@@ -10,7 +10,8 @@ var plumber = require('gulp-plumber');
 gulp.task('serve', ['less'], function() {
 
     browserSync.init({
-        server: "./"
+        server: "./",
+        port:"1111"
     });
 
     gulp.watch("./less/*.less", ['less']);
