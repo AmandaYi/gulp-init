@@ -1,38 +1,44 @@
 const gulp = require("gulp")
 const { src, dest, watch } = gulp
+const Path = require("path");
+// 处理全部的路径配置
+const config = require("./config")
+// const path = Path.join(__dirname,"..",src)
+const Del = require('del');
 module.exports = {
     // 监听编译函数
-    WatchCompile: function (fallback) {
-       return function(){
-        WatcherEarnest (watch(["./src/*.html"]),fallback)
-       }
+    WatchCompile: function (fallbackArr) {
+        return function () {
+            // 处理细微监听
+            WatcherEarnest(fallbackArr)
+        }
     },
+    Copy: function (bundle) {
+        return function () {
+            return src(Path.join(__dirname, "..", `${config.srcDir}${bundle}`, "**", "*"))
+                .pipe(dest(Path.join(__dirname, "..", `${config.output}${bundle}`)));
+        }
+    },
+    Clean:function(){
+        return  Del(Path.join(__dirname,"..",`${config.output}`,))
+    }
 }
 
 // 细微的监听
-function WatcherEarnest (watcher,fallback){
-    watcher.on("change",function(path,stats){
-        console.log(`${path}改变了`)
-        fallback()
+function WatcherEarnest(fallbackArr) {
+    Array.from(fallbackArr).forEach(fallback => {
+        let { Watcher, Fun } = WatchDeal(fallback)
+        Watcher.on("change", Fun)
+        Watcher.on("add", Fun)
+        Watcher.on("delete", Fun)
     })
+
 }
-
-
-
-
-// reg可以是空
-function CopyResources(route, reg = '', bundle) {
-    // 如果没有传入打包之后的路径，那么就和原路径一样
-    if (isString(bundle)) {
-        bundle = route
+function WatchDeal(fallback) {
+    let watchPath = "src/" + fallback.Postfix
+    return {
+        Watcher: watch([watchPath]),
+        Fun: fallback.Compile
     }
-    return src(route)
-        .pipe(dest(result));
 }
-// 是不是字符串
-function isString(str) {
-    if (typeof str == "string") {
-        return true
-    }
-    return false
-}
+

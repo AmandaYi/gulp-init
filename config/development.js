@@ -1,16 +1,17 @@
 const gulp = require("gulp")
-const { src, dest, watch } = gulp
-
+const { src, dest } = gulp
 const htmlmin = require('gulp-htmlmin');
 const cleanCss = require("gulp-clean-css");
-const less = require('gulp-less');
+const Less = require('gulp-less');
+const Sass = require('gulp-sass');
 const JSUglify = require("gulp-uglify");
 const JSBabel = require('gulp-babel');
 const SourceMaps = require('gulp-sourcemaps');
 const Plumber = require('gulp-plumber');
 // 自动加载
-// const Livereload = require('gulp-livereload');
-// const Connect = require('gulp-connect');
+const BrowserSync = require('browser-sync').create();
+const Filter = require('gulp-filter');
+const BrowserSyncReload = BrowserSync.reload;
 let SelfConfig = {
     HtmlminOptions: {
         html5: true,// html5 规范
@@ -52,22 +53,21 @@ let SelfConfig = {
         presets: ['@babel/env']
     },
     // 自动加载
-    ConnectOptions: {
-        port: 8888,
-        livereload: true,
-        root: ['src', 'build'],
-    }
+    ReloadOptions: {
+        stream: true
+    },
 }
 
 module.exports = function (config) {
     return {
         // html
         HTMLCompile: function () {
-            return src(`${config.srcDir}*.html`)
+            let srcDir = config.srcDir;
+            return src(`${srcDir}*.html`)
                 .pipe(Plumber())
                 .pipe(htmlmin(SelfConfig.HtmlminOptions))
                 .pipe(dest(config.output))
-      
+                .pipe(BrowserSyncReload(SelfConfig.ReloadOptions))
         },
         // css
         CSSCompile: function () {
@@ -75,6 +75,8 @@ module.exports = function (config) {
                 .pipe(Plumber())
                 .pipe(cleanCss(SelfConfig.CleanCssOption))
                 .pipe(dest(`${config.output}css/`))
+                .pipe(Filter("**/*.css"))
+                .pipe(BrowserSyncReload(SelfConfig.ReloadOptions))
         },
         // js
         JSCompile: function () {
@@ -86,27 +88,47 @@ module.exports = function (config) {
                 .pipe(JSUglify(SelfConfig.JSUglifyOptions))
                 .pipe(SourceMaps.write(`./map/`))
                 .pipe(dest(`${config.output}js/`))
+                .pipe(Filter("**/*.js"))
+                .pipe(BrowserSyncReload(SelfConfig.ReloadOptions))
         },
         // 专门处理LESS
         LESSCompile: function () {
             return src([`${config.css}/*.less`])
                 .pipe(Plumber())
                 .pipe(SourceMaps.init())
-                .pipe(less(SelfConfig.LessOptions))
+                .pipe(Less(SelfConfig.LessOptions))
+                .pipe(cleanCss(SelfConfig.CleanCssOption))
                 .pipe(SourceMaps.write(`./map/`))
                 .pipe(dest(`${config.output}css`))
+                .pipe(Filter("**/*.css"))
+                .pipe(BrowserSyncReload(SelfConfig.ReloadOptions))
         },
         // 处理SASS
         SASSCompile: function () {
             return src([`${config.css}/*.scss`, `${config.css}/*.sass`])
                 .pipe(Plumber())
                 .pipe(SourceMaps.init())
-                .pipe(less(SelfConfig.SassOptions))
+                .pipe(Sass(SelfConfig.SassOptions))
+                .pipe(cleanCss(SelfConfig.CleanCssOption))
                 .pipe(SourceMaps.write(`./map/`))
                 .pipe(dest(`${config.output}css`))
+                .pipe(Filter("**/*.css"))
+                .pipe(BrowserSyncReload(SelfConfig.ReloadOptions))
         },
-  
- 
+
+        BrowserSyncServer: function () {
+         
+            // 其他的配置,可以进入源码进行查看,
+            BrowserSync.init({
+                server: {
+                    baseDir: `${config.output}`,
+                },
+                port: 9508
+            },()=>{
+                console.log("server is at port 9508")
+            });
+        }
+
     }
 }
 
