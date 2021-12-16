@@ -3,7 +3,7 @@ const { src, dest } = gulp
 const htmlmin = require('gulp-htmlmin');
 const cleanCss = require("gulp-clean-css");
 const Less = require('gulp-less');
-const Sass = require('gulp-sass');
+const Sass = require('gulp-sass')(require("dart-sass"));
 const Autoprefixer = require('gulp-autoprefixer');
 const JSUglify = require("gulp-uglify");
 const JSBabel = require('gulp-babel');
@@ -102,7 +102,7 @@ let SelfConfig = {
     },
     AutoprefixerOptions:{
         // https://github.com/postcss/autoprefixer#options
-        browsers: ['last 2 versions'],
+        // browsers: ['last 2 versions'],
         cascade: false
     }
 }

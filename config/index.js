@@ -10,15 +10,12 @@ module.exports = function (mode) {
     switch (mode) {
         case "development": {
             return DevelopCompile(config)
-            break
         }
         case "production": {
             return ProductionCompile(config)
-            break
         }
         default: {
             return DevelopCompile(config)
-            break
         }
     }
 }
@@ -35,6 +32,7 @@ function DevelopCompile(config) {
                 { Compile: CSSCompile, Postfix: "css/*.css" },
                 { Compile: JSCompile, Postfix: "js/*.js" },
                 { Compile: LESSCompile, Postfix: "css/*.less" },
+                { Compile: SASSCompile, Postfix: "css/*.sass" },
                 { Compile: SASSCompile, Postfix: "css/*.scss" },
                 { Compile: Core.Copy("static"), Postfix: "static/**/*" },
                 { Compile: Core.Copy("assets"), Postfix: "assets/**/*" },
