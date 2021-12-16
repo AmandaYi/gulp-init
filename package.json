@@ -1,6 +1,6 @@
 {
   "name": "gulp-init",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A gulp template, The version of gulp is 4 to create an initialization template ,Support ES6,Babel,Auto Prefix and so on, Configuration of development and production environments",
   "main": "index.js",
   "scripts": {
