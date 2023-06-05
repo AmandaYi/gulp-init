@@ -1,6 +1,6 @@
 {
   "name": "gulp-init",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A gulp template, The version of gulp is 4 to create an initialization template ,Support ES6,Babel,Auto Prefix and so on, Configuration of development and production environments",
   "main": "index.js",
   "scripts": {
@@ -42,10 +42,10 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AmandaYi/gulpfile.git"
+    "url": "git+https://github.com/AmandaYi/gulp-init.git"
   },
   "bugs": {
-    "url": "https://github.com/AmandaYi/gulpfile/issues"
+    "url": "https://github.com/AmandaYi/gulp-init/issues"
   },
-  "homepage": "https://github.com/AmandaYi/gulpfile#readme"
+  "homepage": "https://github.com/AmandaYi/gulp-init#readme"
 }
